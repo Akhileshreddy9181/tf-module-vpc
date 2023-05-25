@@ -26,17 +26,6 @@ resource "aws_route_table" "public-route-table" {
   )
 }
 
-## Private route tables
-
-## Public Route Table
-resource "aws_route_table" "priavte-route-table" {
-  vpc_id = aws_vpc.main.id
-  for_each = var.private_subnets
-  tags = merge(
-    var.tags,
-    { Name = "${var.env}-${each.value["name"]}" }
-  )
-}
 
 ## Private Subnets
 resource "aws_subnet" "private_subnets" {
@@ -49,4 +38,14 @@ resource "aws_subnet" "private_subnets" {
   cidr_block = each.value["cidr_block"]
   availability_zone = each.value["availability_zone"]
 
+}
+
+## Private route tables
+resource "aws_route_table" "private-route-table" {
+  vpc_id = aws_vpc.main.id
+  for_each = var.private_subnets
+  tags = merge(
+    var.tags,
+    { Name = "${var.env}-${each.value["name"]}" }
+  )
 }
